@@ -1,0 +1,143 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "short-video-generator"
+version = "1.0.0"
+description = "An automated AI-powered system for generating and uploading short videos to multiple social media platforms"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Short Video Generator Team", email = "contact@shortvideogenerator.com"}
+]
+maintainers = [
+    {name = "Short Video Generator Team", email = "contact@shortvideogenerator.com"}
+]
+keywords = ["video", "ai", "content-generation", "social-media", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Content Creators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "python-multipart>=0.0.6",
+    "python-dotenv>=1.0.0",
+    "schedule>=1.2.0",
+    "requests>=2.31.0",
+    "pillow>=10.0.0",
+    "opencv-python>=4.8.0",
+    "numpy>=1.24.0",
+    "scipy>=1.11.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "transformers>=4.35.0",
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
+    "diffusers>=0.24.0",
+    "accelerate>=0.24.0",
+    "safetensors>=0.4.0",
+    "moviepy>=1.0.3",
+    "ffmpeg-python>=0.2.0",
+    "imageio>=2.31.0",
+    "imageio-ffmpeg>=0.4.9",
+    "librosa>=0.10.0",
+    "soundfile>=0.12.0",
+    "pydub>=0.25.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    "jinja2>=3.1.0",
+    "aiofiles>=23.0.0",
+    "python-dateutil>=2.8.0",
+    "pytz>=2023.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+]
+gpu = [
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
+    "diffusers>=0.24.0",
+]
+social-media = [
+    "google-api-python-client>=2.108.0",
+    "google-auth-oauthlib>=1.1.0",
+    "google-auth-httplib2>=0.1.0",
+    "tiktok-api>=0.1.0",
+    "instagram-private-api>=1.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/short-video-generator"
+Documentation = "https://github.com/yourusername/short-video-generator#readme"
+Repository = "https://github.com/yourusername/short-video-generator"
+"Bug Tracker" = "https://github.com/yourusername/short-video-generator/issues"
+
+[project.scripts]
+short-generator = "cli:main"
+short-video-generator = "main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+exclude = ["tests*", "venv*", ".git*", "__pycache__*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+asyncio_mode = "auto"

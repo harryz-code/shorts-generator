@@ -3,9 +3,16 @@ Web Dashboard
 Provides a web interface for monitoring and controlling the video generation system
 """
 
+import sys
+import os
+from pathlib import Path
+
+# Add project root to Python path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
 import asyncio
 import logging
-from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
 import json

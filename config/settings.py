@@ -49,7 +49,7 @@ class Settings(BaseSettings):
     openai_model: str = Field(default="gpt-4", description="OpenAI model to use")
     sd_model: str = Field(default="runwayml/stable-diffusion-v1-5", description="Stable Diffusion model")
     stable_diffusion_model: str = Field(default="runwayml/stable-diffusion-v1-5", description="Stable Diffusion model")
-    video_model: str = Field(default="damo-vilab/text-to-video-zero", description="Video generation model")
+    video_model: str = Field(default="stabilityai/stable-video-diffusion-img2vid-xt", description="Stable Video Diffusion model")
     
     # Content generation settings
     daily_video_count: int = Field(default=3, description="Number of videos to generate per day")
@@ -129,6 +129,17 @@ class Settings(BaseSettings):
             self.tiktok_client_key,
             self.tiktok_client_secret
         ])
+    
+    def get_platforms(self) -> List[str]:
+        """Get list of enabled social media platforms"""
+        platforms = []
+        if self.is_youtube_enabled:
+            platforms.append("YouTube")
+        if self.is_instagram_enabled:
+            platforms.append("Instagram")
+        if self.is_tiktok_enabled:
+            platforms.append("TikTok")
+        return platforms
 
 # Global settings instance
 settings = Settings()

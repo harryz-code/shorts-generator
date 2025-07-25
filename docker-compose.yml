@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  short-video-generator:
+    build: .
+    container_name: short-video-generator
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WEB_HOST=0.0.0.0
+      - WEB_PORT=8000
+      - DEBUG=true
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ./models:/app/models
+      - ./assets:/app/assets
+      - ./.env:/app/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add Redis for caching and job queuing
+  redis:
+    image: redis:7-alpine
+    container_name: short-video-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Optional: Add PostgreSQL for production database
+  postgres:
+    image: postgres:15-alpine
+    container_name: short-video-postgres
+    environment:
+      POSTGRES_DB: short_video_generator
+      POSTGRES_USER: short_video_user
+      POSTGRES_PASSWORD: short_video_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  default:
+    name: short-video-network

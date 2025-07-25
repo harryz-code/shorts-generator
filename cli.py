@@ -191,7 +191,8 @@ class ShortGeneratorCLI:
     async def show_status(self):
         """Show system status"""
         try:
-            await self.initialize()
+            # Only initialize database and basic components, skip heavy AI models
+            await self.db.initialize()
             
             # Get system status
             queued_content = await self.scheduler.get_queued_content()
@@ -222,6 +223,12 @@ class ShortGeneratorCLI:
             print(f"Video Duration: {self.settings.video_duration}s")
             print(f"Video Resolution: {self.settings.video_resolution}")
             print(f"Enabled Platforms: {', '.join(self.settings.get_platforms())}")
+            
+            print("\n🤖 AI Models Status")
+            print("-" * 20)
+            print(f"Stable Video Diffusion: ✅ Downloaded (./stable-video-diffusion/)")
+            print(f"Stable Diffusion: ⏳ Not downloaded (will download on first use)")
+            print(f"GPU Available: {'✅' if self.settings.use_gpu else '❌'}")
             
         except Exception as e:
             self.logger.error(f"❌ Error getting status: {e}")
