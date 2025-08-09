@@ -1,47 +1,53 @@
 # Core dependencies
-fastapi==0.104.1
-uvicorn==0.24.0
-python-multipart==0.0.6
-python-dotenv==1.0.0
-schedule==1.2.0
-requests==2.31.0
-pillow==10.1.0
-opencv-python==4.8.1.78
-numpy==1.24.3
-scipy==1.11.4
+fastapi>=0.104.0
+uvicorn>=0.24.0
+python-multipart>=0.0.6
+python-dotenv>=1.0.0
+schedule>=1.2.0
+requests>=2.31.0
+pillow>=10.0.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Pydantic settings
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
 
 # AI/ML dependencies
-torch==2.1.0
-torchvision==0.16.0
-transformers==4.35.2
-diffusers==0.24.0
-accelerate==0.24.1
-safetensors==0.4.0
+transformers>=4.35.0
+torch>=2.1.0
+torchvision>=0.16.0
+diffusers>=0.24.0
+accelerate>=0.24.0
+safetensors>=0.4.0
 
 # Video processing
-moviepy==1.0.3
-ffmpeg-python==0.2.0
-imageio==2.31.5
-imageio-ffmpeg==0.4.9
+moviepy>=1.0.3
+ffmpeg-python>=0.2.0
+imageio>=2.31.0
+imageio-ffmpeg>=0.4.9
 
 # Audio processing
-librosa==0.10.1
-soundfile==0.12.1
-pydub==0.25.1
+librosa>=0.10.0
+soundfile>=0.12.0
+pydub>=0.25.0
 
-# Social media APIs
-google-api-python-client==2.108.0
-google-auth-oauthlib==1.1.0
-google-auth-httplib2==0.1.1
-tiktok-api==0.1.0
-instagram-private-api==1.6.0
+# Social media APIs (optional)
+# google-api-python-client>=2.108.0
+# google-auth-oauthlib>=1.1.0
+# google-auth-httplib2>=0.1.0
+# tiktok-api>=0.1.0
+# instagram-private-api>=1.6.0
 
-# Database and storage
-sqlalchemy==2.0.23
-alembic==1.12.1
+# Database and storage (SQLite by default)
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+
+# Web framework
+jinja2>=3.1.0
+aiofiles>=23.0.0
 
 # Utilities
-pyyaml==6.0.1
-jinja2==3.1.2
-aiofiles==23.2.1
-httpx==0.25.2
+python-dateutil>=2.8.0
+pytz>=2023.0

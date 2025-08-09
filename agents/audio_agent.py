@@ -16,8 +16,8 @@ class AudioAgent:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.settings = settings
-        self.music_dir = self.settings.background_music_dir
-        self.sounds_dir = self.settings.sound_effects_dir
+        self.music_dir = Path(self.settings.background_music_dir)
+        self.sounds_dir = Path(self.settings.sounds_dir)
     
     async def initialize(self):
         """Initialize audio agent"""

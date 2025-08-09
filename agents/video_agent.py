@@ -29,7 +29,12 @@ class VideoAgent:
         
         # Video processing
         self.fps = self.settings.video_fps
-        self.resolution = tuple(map(int, self.settings.video_resolution.split('x')))
+        try:
+            self.resolution = tuple(map(int, self.settings.video_resolution.split('x')))
+        except (ValueError, AttributeError):
+            # Fallback to default resolution
+            self.resolution = (1080, 1920)
+            self.logger.warning(f"⚠️ Invalid resolution format: {self.settings.video_resolution}, using default: {self.resolution}")
         
     async def initialize(self):
         """Initialize AI models"""
@@ -131,8 +136,8 @@ class VideoAgent:
         """Create video file from generated frames"""
         try:
             # Ensure output directory exists
-            output_dir = self.settings.output_dir / "videos"
-            output_dir.mkdir(exist_ok=True)
+            output_dir = Path(self.settings.output_dir) / "videos"
+            output_dir.mkdir(exist_ok=True, parents=True)
             
             # Generate filename
             safe_prompt = "".join(c for c in prompt if c.isalnum() or c in (' ', '-', '_')).rstrip()
@@ -165,8 +170,8 @@ class VideoAgent:
         """Create a simple fallback video"""
         try:
             # Create a simple animated video
-            output_dir = self.settings.output_dir / "videos"
-            output_dir.mkdir(exist_ok=True)
+            output_dir = Path(self.settings.output_dir) / "videos"
+            output_dir.mkdir(exist_ok=True, parents=True)
             
             filename = f"fallback_{duration}s.mp4"
             output_path = output_dir / filename
@@ -179,10 +184,13 @@ class VideoAgent:
                 # Create frame with moving circle
                 frame = np.zeros((*self.resolution, 3), dtype=np.uint8)
                 
-                # Add moving circle
-                x = int((i / (duration * self.fps)) * self.resolution[0])
-                y = self.resolution[1] // 2
-                cv2.circle(frame, (x, y), 50, (0, 255, 255), -1)
+                # Draw moving circle
+                center_x = int(self.resolution[0] * 0.5 + 100 * np.sin(i * 0.1))
+                center_y = int(self.resolution[1] * 0.5 + 100 * np.cos(i * 0.1))
+                cv2.circle(frame, (center_x, center_y), 50, (255, 255, 255), -1)
+                
+                # Add text
+                cv2.putText(frame, prompt[:20], (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
                 
                 out.write(frame)
             

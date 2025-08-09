@@ -18,7 +18,7 @@ class DatabaseManager:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.settings = settings
-        self.db_path = self.settings.data_dir / "shorts.db"
+        self.db_path = Path(self.settings.data_dir) / "shorts.db"
         self.connection = None
     
     async def initialize(self):
@@ -27,7 +27,7 @@ class DatabaseManager:
             self.logger.info("🗄️ Initializing Database...")
             
             # Ensure data directory exists
-            self.settings.data_dir.mkdir(exist_ok=True, parents=True)
+            Path(self.settings.data_dir).mkdir(exist_ok=True, parents=True)
             
             # Connect to database
             self.connection = sqlite3.connect(str(self.db_path))

@@ -1,118 +1,109 @@
 """
-Configuration settings for the Short Video Generator
-Manages environment variables, defaults, and system configuration
+Configuration settings for the Short Video Generator system.
 """
-
 import os
-from pathlib import Path
-from typing import List, Optional
-from pydantic import BaseSettings, Field
+from typing import Optional, List
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 
 class Settings(BaseSettings):
-    """Application settings loaded from environment variables"""
+    """Application settings with environment variable support."""
     
-    # Application
-    app_name: str = "Cute Animal Short Generator"
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    
+    # Application settings
+    app_name: str = "Short Video Generator"
     app_version: str = "1.0.0"
-    debug: bool = Field(default=False, env="DEBUG")
-    
-    # Paths
-    base_dir: Path = Path(__file__).parent.parent
-    models_dir: Path = Field(default="./models", env="MODEL_PATH")
-    output_dir: Path = Field(default="./output", env="OUTPUT_DIR")
-    temp_dir: Path = Field(default="./temp", env="TEMP_DIR")
-    data_dir: Path = Field(default="./data", env="DATA_DIR")
-    
-    # AI Models
-    use_gpu: bool = Field(default=True, env="USE_GPU")
-    model_device: str = Field(default="cuda" if os.environ.get("USE_GPU", "true").lower() == "true" else "cpu")
-    
-    # Content Generation
-    daily_video_count: int = Field(default=3, env="DAILY_VIDEO_COUNT")
-    video_duration: int = Field(default=15, env="VIDEO_DURATION")  # seconds
-    video_resolution: str = Field(default="1080x1920", env="VIDEO_RESOLUTION")  # vertical for shorts
-    video_fps: int = Field(default=30, env="VIDEO_FPS")
-    
-    # Content Themes
-    content_themes: List[str] = [
-        "cute_animals",
-        "funny_pets", 
-        "heartwarming_stories",
-        "educational_facts",
-        "seasonal_content"
-    ]
-    
-    # Video Generation
-    stable_diffusion_model: str = Field(default="runwayml/stable-diffusion-v1-5", env="SD_MODEL")
-    video_model: str = Field(default="damo-vilab/text-to-video-zero", env="VIDEO_MODEL")
-    max_video_length: int = Field(default=60, env="MAX_VIDEO_LENGTH")
-    
-    # Audio Settings
-    audio_sample_rate: int = Field(default=44100, env="AUDIO_SAMPLE_RATE")
-    background_music_dir: Path = Field(default="./assets/music", env="MUSIC_DIR")
-    sound_effects_dir: Path = Field(default="./assets/sounds", env="SOUNDS_DIR")
-    
-    # Social Media Settings
-    upload_time: str = Field(default="09:00", env="UPLOAD_TIME")
-    timezone: str = Field(default="UTC", env="TIMEZONE")
-    
-    # YouTube Settings
-    youtube_api_key: Optional[str] = Field(default=None, env="YOUTUBE_API_KEY")
-    youtube_client_id: Optional[str] = Field(default=None, env="YOUTUBE_CLIENT_ID")
-    youtube_client_secret: Optional[str] = Field(default=None, env="YOUTUBE_CLIENT_SECRET")
-    youtube_channel_id: Optional[str] = Field(default=None, env="YOUTUBE_CHANNEL_ID")
-    
-    # Instagram Settings
-    instagram_username: Optional[str] = Field(default=None, env="INSTAGRAM_USERNAME")
-    instagram_password: Optional[str] = Field(default=None, env="INSTAGRAM_PASSWORD")
-    instagram_session_file: Optional[str] = Field(default=None, env="INSTAGRAM_SESSION_FILE")
-    
-    # TikTok Settings
-    tiktok_access_token: Optional[str] = Field(default=None, env="TIKTOK_ACCESS_TOKEN")
-    tiktok_client_key: Optional[str] = Field(default=None, env="TIKTOK_CLIENT_KEY")
-    tiktok_client_secret: Optional[str] = Field(default=None, env="TIKTOK_CLIENT_SECRET")
-    
-    # Database
-    database_url: str = Field(default="sqlite:///./data/shorts.db", env="DATABASE_URL")
-    
-    # Web Dashboard
-    web_host: str = Field(default="0.0.0.0", env="WEB_HOST")
-    web_port: int = Field(default=8000, env="WEB_PORT")
-    web_secret_key: str = Field(default="your-secret-key-here", env="WEB_SECRET_KEY")
+    debug: bool = Field(default=False, description="Enable debug mode")
     
     # Logging
-    log_level: str = Field(default="INFO", env="LOG_LEVEL")
-    log_file: Optional[str] = Field(default=None, env="LOG_FILE")
+    log_level: str = Field(default="INFO", description="Log level")
+    log_file: Optional[str] = Field(default="shorts_generator.log", description="Log file path")
     
-    # Rate Limiting
-    max_requests_per_hour: int = Field(default=100, env="MAX_REQUESTS_PER_HOUR")
-    request_delay: float = Field(default=1.0, env="REQUEST_DELAY")  # seconds
+    # Server settings
+    host: str = Field(default="0.0.0.0", description="Server host")
+    port: int = Field(default=8000, description="Server port")
+    web_host: str = Field(default="0.0.0.0", description="Web dashboard host")
+    web_port: int = Field(default=8000, description="Web dashboard port")
+    web_secret_key: str = Field(default="your-secret-key-here-change-this", description="Web secret key")
     
-    # Quality Settings
-    min_video_quality: str = Field(default="720p", env="MIN_VIDEO_QUALITY")
-    enable_watermark: bool = Field(default=False, env="ENABLE_WATERMARK")
-    watermark_text: str = Field(default="", env="WATERMARK_TEXT")
+    # Paths
+    model_path: str = Field(default="./models", description="Models directory")
+    output_dir: str = Field(default="./output", description="Output directory for videos")
+    temp_dir: str = Field(default="./temp", description="Temporary directory")
+    data_dir: str = Field(default="./data", description="Data directory")
+    music_dir: str = Field(default="./assets/music", description="Music directory")
+    sounds_dir: str = Field(default="./assets/sounds", description="Sound effects directory")
+    background_music_dir: str = Field(default="./assets/music", description="Background music directory")
     
-    # Backup Settings
-    enable_backup: bool = Field(default=True, env="ENABLE_BACKUP")
-    backup_interval_hours: int = Field(default=24, env="BACKUP_INTERVAL_HOURS")
-    max_backup_files: int = Field(default=7, env="MAX_BACKUP_FILES")
+    # Database settings
+    database_url: str = Field(
+        default="sqlite:///./data/shorts.db",
+        description="Database connection URL"
+    )
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+    # AI/ML settings
+    use_gpu: bool = Field(default=True, description="Use GPU for AI models")
+    model_device: str = Field(default="cuda", description="Model device (cuda/cpu)")
+    openai_api_key: Optional[str] = Field(default=None, description="OpenAI API key")
+    openai_model: str = Field(default="gpt-4", description="OpenAI model to use")
+    sd_model: str = Field(default="runwayml/stable-diffusion-v1-5", description="Stable Diffusion model")
+    stable_diffusion_model: str = Field(default="runwayml/stable-diffusion-v1-5", description="Stable Diffusion model")
+    video_model: str = Field(default="damo-vilab/text-to-video-zero", description="Video generation model")
     
-    def __post_init__(self):
-        """Post-initialization setup"""
-        # Create necessary directories
-        self.models_dir.mkdir(exist_ok=True)
-        self.output_dir.mkdir(exist_ok=True)
-        self.temp_dir.mkdir(exist_ok=True)
-        self.data_dir.mkdir(exist_ok=True)
-        self.background_music_dir.mkdir(exist_ok=True, parents=True)
-        self.sound_effects_dir.mkdir(exist_ok=True, parents=True)
+    # Content generation settings
+    daily_video_count: int = Field(default=3, description="Number of videos to generate per day")
+    video_duration: int = Field(default=15, description="Video duration in seconds")
+    video_resolution: str = Field(default="1080x1920", description="Video resolution")
+    video_fps: int = Field(default=30, description="Video FPS")
+    max_video_length: int = Field(default=60, description="Maximum video length in seconds")
+    content_themes: str = Field(default="cute_animals,funny_pets,heartwarming_stories,educational_facts,seasonal_content", description="Content themes")
     
+    # Video processing settings
+    max_video_duration: int = Field(default=60, description="Maximum video duration in seconds")
+    min_video_quality: str = Field(default="720p", description="Minimum video quality")
+    enable_watermark: bool = Field(default=False, description="Enable watermark")
+    watermark_text: str = Field(default="", description="Watermark text")
+    
+    # Audio settings
+    audio_sample_rate: int = Field(default=44100, description="Audio sample rate")
+    
+    # Social media settings
+    youtube_api_key: Optional[str] = Field(default=None, description="YouTube API key")
+    youtube_client_id: Optional[str] = Field(default=None, description="YouTube client ID")
+    youtube_client_secret: Optional[str] = Field(default=None, description="YouTube client secret")
+    youtube_channel_id: Optional[str] = Field(default=None, description="YouTube channel ID")
+    tiktok_access_token: Optional[str] = Field(default=None, description="TikTok access token")
+    tiktok_client_key: Optional[str] = Field(default=None, description="TikTok client key")
+    tiktok_client_secret: Optional[str] = Field(default=None, description="TikTok client secret")
+    instagram_access_token: Optional[str] = Field(default=None, description="Instagram access token")
+    instagram_username: Optional[str] = Field(default=None, description="Instagram username")
+    instagram_password: Optional[str] = Field(default=None, description="Instagram password")
+    instagram_session_file: Optional[str] = Field(default=None, description="Instagram session file")
+    
+    # Scheduling settings
+    auto_publish: bool = Field(default=False, description="Enable automatic publishing")
+    publish_schedule: str = Field(default="0 9 * * *", description="Cron schedule for publishing")
+    upload_time: str = Field(default="09:00", description="Upload time")
+    timezone: str = Field(default="UTC", description="Timezone")
+    
+    # Rate limiting
+    max_requests_per_hour: int = Field(default=100, description="Maximum requests per hour")
+    request_delay: float = Field(default=1.0, description="Delay between requests in seconds")
+    
+    # Storage settings
+    max_file_size: int = Field(default=100 * 1024 * 1024, description="Maximum file size in bytes")
+    allowed_extensions: List[str] = Field(
+        default=[".mp4", ".avi", ".mov", ".mkv", ".jpg", ".png", ".mp3", ".wav"],
+        description="Allowed file extensions"
+    )
+    
+    # Backup settings
+    enable_backup: bool = Field(default=True, description="Enable backup")
+    backup_interval_hours: int = Field(default=24, description="Backup interval in hours")
+    max_backup_files: int = Field(default=7, description="Maximum backup files to keep")
+    
+    # Computed properties
     @property
     def is_youtube_enabled(self) -> bool:
         """Check if YouTube integration is enabled"""
@@ -138,35 +129,6 @@ class Settings(BaseSettings):
             self.tiktok_client_key,
             self.tiktok_client_secret
         ])
-    
-    def get_platforms(self) -> List[str]:
-        """Get list of enabled platforms"""
-        platforms = []
-        if self.is_youtube_enabled:
-            platforms.append("youtube")
-        if self.is_instagram_enabled:
-            platforms.append("instagram")
-        if self.is_tiktok_enabled:
-            platforms.append("tiktok")
-        return platforms
-    
-    def validate(self) -> bool:
-        """Validate critical settings"""
-        errors = []
-        
-        if not self.get_platforms():
-            errors.append("At least one social media platform must be configured")
-        
-        if self.daily_video_count <= 0:
-            errors.append("Daily video count must be positive")
-        
-        if self.video_duration <= 0 or self.video_duration > self.max_video_length:
-            errors.append(f"Video duration must be between 1 and {self.max_video_length} seconds")
-        
-        if errors:
-            raise ValueError(f"Configuration validation failed: {'; '.join(errors)}")
-        
-        return True
 
 # Global settings instance
 settings = Settings()
