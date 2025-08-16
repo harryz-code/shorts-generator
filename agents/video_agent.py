@@ -112,35 +112,17 @@ class VideoAgent:
             if not self.is_initialized:
                 await self.initialize()
             
-            # Try AI generation first if available
-            if self.image_generator and self.video_generator:
-                try:
-                    self.logger.info("🤖 Using AI models for video generation...")
-                    
-                    # For Stable Video Diffusion, we need an input image first
-                    self.logger.info("🖼️ Generating input image with Stable Diffusion...")
-                    input_image = await self._generate_input_image(prompt)
-                    
-                    self.logger.info("🎬 Generating video with Stable Video Diffusion...")
-                    video_path = await self._generate_stable_video_diffusion(prompt, input_image, duration)
-                    
-                    self.logger.info(f"✅ AI Video generated: {video_path}")
-                    return video_path
-                    
-                except Exception as e:
-                    self.logger.warning(f"⚠️ AI generation failed: {e}, using fallback")
-            
-            # Fallback to enhanced creative generation
-            self.logger.info("🎨 Using Enhanced Creative Generation Mode")
+            # For faster generation, skip heavy AI models and use optimized fallback
+            self.logger.info("🎨 Using Fast Creative Generation Mode")
             self.logger.info("✨ Creating engaging content based on your prompt")
             
             # Create content based on the prompt theme
             if any(word in prompt.lower() for word in ['cat', 'kitten', 'feline']):
-                video_path = await self._create_fallback_video(prompt, duration)
+                video_path = await self._create_cat_video(prompt, duration)
             elif any(word in prompt.lower() for word in ['dog', 'puppy', 'canine']):
-                video_path = await self._create_fallback_video(prompt, duration)
+                video_path = await self._create_dog_video(prompt, duration)
             elif any(word in prompt.lower() for word in ['pet', 'animal', 'cute']):
-                video_path = await self._create_fallback_video(prompt, duration)
+                video_path = await self._create_cute_animal_video(prompt, duration)
             else:
                 video_path = await self._create_fallback_video(prompt, duration)
             
